@@ -16,7 +16,7 @@ class User:
         
 # linkMap pair => {source_key: destination_attribute, ...}
 linkMap = {'id':'ID', 'online_time':'onlineTime', 'status':'status'}
-multiLinkDictionary(User, sourceVar='userData', linkHashMap=linkMap)
+multiLinkDictionary(User, sourceVar='userData', linkMap=linkMap, enableSetter=True)
 # IMPORTANT: please do not link inside __init__. 
 
 >>> testuser = User()

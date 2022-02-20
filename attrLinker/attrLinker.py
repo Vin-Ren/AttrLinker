@@ -30,6 +30,7 @@ class Linker:
             setattr(linkedSelf, self.sourceVar, self.setterConverter(linkedSelf, replacement))
         _linkGetter.linker = self
         _linkSetter.linker = self
+        # print(f"{enableSetter=}") # DEBUG
         self.property = property(fget=_linkGetter, fset=_linkSetter if enableSetter else None, doc=self.doc)
         return self # Support calling chain. Ex: Linker(...).setup().apply(...)
 
@@ -84,7 +85,7 @@ class LinkManager:
         self.linkers[name] = self.linkerClass(sourceVar, getterConverter=getterConverter, setterConverter=setterConverter, doc=doc)
         if doSetup:
             setupOptions = DictUpdater(self.linkerSetupOptions, setupOptions)
-            self.linkers[name].setup(**self.linkerSetupOptions)
+            self.linkers[name].setup(**setupOptions)
         return self.linkers[name] # if they wanted to use it through call chaining, they can. Ex: AttrLinkManager().createLinker(...).apply(...)
 
     def prepareLinkers(self, setupOptions={}):
@@ -103,7 +104,7 @@ class LinkManager:
     def bind(self, targetClass, sourceVar, targetVar, getterConverter=DefaultLambda, setterConverter=DefaultLambda, doc='', setupOptions={}, name=None, orphan=False, **kw):
         # generates name for the linker, or just make one and orphan/delete it after binding.
         setupOptions = DictUpdater(self.linkerSetupOptions, setupOptions)
-        
+        # print(setupOptions) # DEBUG
         if orphan:
             linker = self.linkerClass(sourceVar, getterConverter=getterConverter, setterConverter=setterConverter, doc=doc)
             linker.setup(**setupOptions)

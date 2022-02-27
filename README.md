@@ -21,10 +21,14 @@ class User:
         self.userData = {}
 
     def fetchData(self):
-        self.userData = {'id':1, 'Name':'Foo', 'online_time':0, 'status': 'idle'}
+        if len(self.userData):
+            self.userData = {'id':1, 'Name':'Foo', 'online_time':0, 'status': 'idle'}
+        else:
+            self.userData['status']='online'
+            self.userData['online_time']+=1
         
 # linkMap pair => {source_key: destination_attribute, ...}
-linkMap = {'id':'ID', 'online_time':'onlineTime', 'status':'status'}
+linkMap = {'id':'ID', 'Name':'name', 'online_time':'onlineTime', 'status':'status'}
 multiLinkDictionary(User, sourceVar='userData', linkMap=linkMap, enableSetter=True)
 # enableSetter set to True to be able to assign value back to it.
 # IMPORTANT: please do not link inside __init__. 
@@ -33,13 +37,22 @@ multiLinkDictionary(User, sourceVar='userData', linkMap=linkMap, enableSetter=Tr
 >>> testuser.fetchData()
 >>> testuser.ID
 1
+>>> testuser.name
+'Foo'
 >>> testuser.onlineTime
 0
 >>> testuser.status
 'idle'
->>> testuser.userData
+>>> testuser.userData # Checking the data directly
 {'id': 1, 'Name': 'Foo', 'online_time': 0, 'status': 'idle'}
->>> testuser.onlineTime+=10
+>>> testuser.onlineTime+=10 # Change it remotely from the assigned attribute (only if enableSetter is True)
 >>> testuser.userData
 {'id': 1, 'Name': 'Foo', 'online_time': 10, 'status': 'idle'}
+>>> testuser.fetchData() # Simulating new data fetched from a server on the internet
+>>> testuser.onlineTime
+11
+>>> testuser.status
+'online'
+>>> testuser.userData # Checking the data directly
+{'id': 1, 'Name': 'Foo', 'online_time': 11, 'status': 'online'}
 ```

@@ -36,12 +36,34 @@ def multiLinkDictionary(targetClass, sourceVar, linkMap={}, **kw):
     ------
     targetClass:type is the class for the linking to be applied at
     sourceVar:str is the source variable name of an instance of the targetClass, which must be of type dict
-    linkMap:dict is the mapping for the linking, the mapping should be in the format as follows: {key_in_dictionary:attribute_name_on_instance,...}
+    linkMap:dict is the mapping for the linking, the mapping should be in the format as follows: {attribute_name_on_instance:key_in_dictionary,...}
 
     Extra keyword argument passed, would be passed directly to linkDictionary
     '''
-    for sourceDictKey, targetVar in linkMap.items():
+    for targetVar, sourceDictKey in linkMap.items():
         linkDictionary(targetClass, sourceVar, targetVar, sourceDictKey, **kw)
+
+
+def formattedTextFromDict(targetClass, sourceVar, targetVar, formattable_text, **kw):
+    '''
+    Creates a formatted text from given formattable_text which is formatted with the sourceVar dictionary.
+    Similiar to linkDictionary, except you specify the dictionary keys in the formattable_text, and you could specify multiple keys. Also setter is not available here.
+    Would incurr a KeyError if the key(s) in the formattable_text is not found in given source dictionary.
+    Example: formattedTextFromDict(User, 'data', 'full_name', '{first_name} {last_name}')
+    'User.full_name' value is '{first_name} {second_name}'.format(**User.data)
+    
+    Params
+    ------
+    targetClass:type is the class for the linking to be applied at
+    sourceVar:str is the source variable name of an instance of the targetClass, which must be of type dict
+    targetVar:str is the attribute name on the class to be linked to
+    formattable_text:str is the text to be formatted with the data from the source. the format of the formattable_text is "{key} {key2}" and so on.
+    
+    Extra keyword argument passed, would be passed directly to manager.bind
+    '''
+    getterConverter = lambda dict: formattable_text.format(**dict)
+    manager = LinkManager._getDefault()
+    manager.bind(targetClass, sourceVar, targetVar, getterConverter, setupOptions={'enableSetter':False}, **kw)
 
 
 def linkList(targetClass, sourceVar, targetVar, sourceIndex, enableSetter=False, doc='', **kw):
@@ -75,11 +97,11 @@ def multiLinkList(targetClass, sourceVar, linkMap={}, **kw):
     ------
     targetClass:type is the class for the linking to be applied at
     sourceVar:str is the source variable name of an instance of the targetClass, which must be of type list
-    linkMap:dict is the mapping for the linking, the mapping should be in the format as follows: {index_in_list:attribute_name_on_instance,...}
+    linkMap:dict is the mapping for the linking, the mapping should be in the format as follows: {attribute_name_on_instance:index_in_list,...}
 
     Extra keyword argument passed, would be passed directly to linkList
     '''
-    for sourceListIndex, targetVar in linkMap.items():
+    for targetVar, sourceListIndex in linkMap.items():
         linkList(targetClass, sourceVar, targetVar, sourceListIndex, **kw)
 
 
@@ -115,9 +137,9 @@ def multiLinkObject(targetClass, sourceVar, linkMap={}, **kw):
     ------
     targetClass:type is the class for the linking to be applied at
     sourceVar:str is the source variable name of an instance of the targetClass
-    linkMap:dict is the mapping for the linking, the mapping should be in the format as follows: {attribute_on_source_object:attribute_name_on_instance,...}
+    linkMap:dict is the mapping for the linking, the mapping should be in the format as follows: {attribute_name_on_instance:attribute_on_source_object,...}
 
     Extra keyword argument passed, would be passed directly to linkList
     '''
-    for sourceObjectAttr, targetVar in linkMap.items():
+    for targetVar, sourceObjectAttr in linkMap.items():
         linkList(targetClass, sourceVar, targetVar, sourceObjectAttr, **kw)

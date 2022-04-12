@@ -17,7 +17,7 @@ IMHO, The best use case for this is in dynamically allocated data, periodically 
 ## Examples
 ### 1. Dynamically Allocated Data
 ```py
-from attrLinker.presets import multiLinkDictionary
+from attrLinker.presets import multiLinkDictionary, formattedTextFromDict
 
 class User:
     def __init__(self):
@@ -32,7 +32,8 @@ class User:
         
 # linkMap pair => {destination_attribute: source_key, ...}
 linkMap = {'ID':'id', 'name':'Name', 'onlineTime':'online_time', 'status':'status'}
-multiLinkDictionary(User, sourceVar='userData', linkMap=linkMap, enableSetter=True)
+multiLinkDictionary(User, 'userData', linkMap=linkMap, enableSetter=True)
+formattedTextFromDict(User, 'userData', 'nameTag', "{Name}#{id}")
 # enableSetter set to True to be able to assign value back to it.
 # IMPORTANT: Do not link inside __init__, or the linking operation will be called for every subsequent object created from the class.
 
@@ -46,6 +47,8 @@ multiLinkDictionary(User, sourceVar='userData', linkMap=linkMap, enableSetter=Tr
 0
 >>> testuser.status
 'idle'
+>>> testuser.nameTag
+'Foo#1'
 >>> testuser.userData # Checking the data directly
 {'id': 1, 'Name': 'Foo', 'online_time': 0, 'status': 'idle'}
 >>> testuser.onlineTime+=10 # Change it remotely from the assigned attribute (only if enableSetter is True)

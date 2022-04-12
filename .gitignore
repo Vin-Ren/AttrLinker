@@ -1,3 +1,8 @@
+# Custom
+publish.bat
+run_tests.bat
+.vscode/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

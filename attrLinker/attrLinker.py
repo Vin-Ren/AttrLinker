@@ -1,10 +1,11 @@
 from .utils import DefaultLambda, DictUpdater
 from .exceptions import LinkerExists, LinkerNotFound, LinkerNotReady
 
+from typing import Any, Dict
 
 class Linker:
     '''Linker object to link between attributes of a class' instance using property'''
-    def __init__(self, sourceVar, getterConverter=DefaultLambda, setterConverter=DefaultLambda, setterOverrider=None, doc=None):
+    def __init__(self, sourceVar: str, getterConverter: callable = DefaultLambda, setterConverter: callable = DefaultLambda, setterOverrider: callable = None, doc: str = None):
         '''
         Params
         ------
@@ -33,7 +34,7 @@ class Linker:
         '''Whether the linker has been set up or not.'''
         return isinstance(self.property, property)
 
-    def setup(self, enableSetter=True):
+    def setup(self, enableSetter: bool = True):
         '''
         Sets up the linker's property. This method needs to be called before applying.
         
@@ -58,7 +59,7 @@ class Linker:
         self.property = property(fget=_linkGetter, fset=_linkSetter if enableSetter else None, doc=self.doc)
         return self # Support calling chain. Ex: Linker(...).setup().apply(...)
 
-    def apply(self, targetClass, targetVar):
+    def apply(self, targetClass: type, targetVar: str):
         '''
         Applies the linker to given class at the target variable name.
 
@@ -92,7 +93,7 @@ class LinkManager:
         return cls._DEFAULT_MANAGER
 
     @classmethod
-    def changeLinkerClass(cls, linkerClass):
+    def changeLinkerClass(cls, linkerClass: type):
         '''
         Change Linker Class if needed, or for experimental purposes. Given Linker Class replacement MUST inherit from the original Linker Class.
 
@@ -104,7 +105,7 @@ class LinkManager:
             raise RuntimeError('Given Linker Class Replacement Must Inherit From <Linker>.')
         cls._LINKER_CLASS = linkerClass
 
-    def __init__(self, autoLinkWithManager=True, linkerSetupOptions={}):
+    def __init__(self, autoLinkWithManager: bool = True, linkerSetupOptions: Dict[str, Any] = {}):
         '''
         Params
         ------
@@ -122,7 +123,7 @@ class LinkManager:
     def linkerClass(self):
         return self.__class__._LINKER_CLASS
 
-    def createLinker(self, name, sourceVar, getterConverter=DefaultLambda, setterConverter=DefaultLambda, setterOverrider=None, doc='', overwrite=False, doSetup=True, setupOptions={}):
+    def createLinker(self, name: str, sourceVar: str, getterConverter: callable = DefaultLambda, setterConverter: callable = DefaultLambda, setterOverrider: callable = None, doc: str = '', overwrite: bool = False, doSetup: bool = True, setupOptions: Dict[str, Any] = {}):
         '''
         Creates a linker object with given arguments, and put it into a hashmap on the LinkManager linkers attribute, then call its setup method if doSetup is True.
 
@@ -146,7 +147,7 @@ class LinkManager:
             self.linkers[name].setup(**setupOptions)
         return self.linkers[name] # if they wanted to use it through call chaining, they can. Ex: AttrLinkManager().createLinker(...).apply(...)
 
-    def prepareLinkers(self, setupOptions={}):
+    def prepareLinkers(self, setupOptions: Dict[str, Any] = {}):
         '''
         Calls the setup method for every linker in the manager's hashmap.
         
@@ -158,7 +159,7 @@ class LinkManager:
         setupOptions = DictUpdater(self.linkerSetupOptions, setupOptions)
         [linker.setup(**setupOptions) for linker in self.linkers]
 
-    def applyLinker(self, linkerName, targetClass, targetVar):
+    def applyLinker(self, linkerName: str, targetClass: type, targetVar: str):
         '''
         Applies the linker with given linkerName to given class at the target variable name.
 
@@ -175,7 +176,7 @@ class LinkManager:
         except KeyError as exc:
             raise LinkerNotFound('Linker {} is not found in the manager. Make sure you enter the correct name, or create one if it does not exists.'.format(linkerName)) from exc
 
-    def bind(self, targetClass, sourceVar, targetVar, getterConverter=DefaultLambda, setterConverter=DefaultLambda, setterOverrider=None, doc='', setupOptions={}, name=None, orphan=False, **kw):
+    def bind(self, targetClass: type, sourceVar: str, targetVar: str, getterConverter: callable = DefaultLambda, setterConverter: callable = DefaultLambda, setterOverrider: callable = None, doc: str = '', setupOptions: Dict[str, Any] = {}, name: str = None, orphan: bool = False, **kw):
         '''
         Creates linker and apply it to the targetClass, then store it with generated name or given name, or orphan it.
 
@@ -209,4 +210,3 @@ class LinkManager:
         name = str(name or '{}-class:{};source:{};target:{}'.format(self.linkerClass, targetClass, sourceVar, targetVar))
         self.createLinker(name, sourceVar, getterConverter=getterConverter, setterConverter=setterConverter, setterOverrider=setterOverrider, doc=doc, setupOptions=setupOptions, **kw)
         self.applyLinker(name, targetClass, targetVar)
-

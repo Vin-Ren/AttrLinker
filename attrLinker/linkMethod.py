@@ -21,3 +21,14 @@ MultiList = LinkMethod.MultiList
 Object = LinkMethod.Object
 MultiObject = LinkMethod.MultiObject
 FormattedText = LinkMethod.FormattedText
+
+__all__ = [
+'DirectLink',
+'Dictionary',
+'MultiDictionary',
+'List',
+'MultiList',
+'Object',
+'MultiObject',
+'FormattedText'
+]

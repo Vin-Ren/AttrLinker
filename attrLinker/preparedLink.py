@@ -1,4 +1,3 @@
-from typing import list
 
 from .attrLinker import LinkManager
 from .linkMethod import LinkMethod

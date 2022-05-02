@@ -26,7 +26,7 @@ class User:
     # linkMap pair => {destination_attribute: source_key, ...}
     # enableSetter set to True to be able to assign value back to it.
     __LINKS__ = [PreparedLink(MultiDictionary, 'userData', linkMap={'ID':'id', 'name':'name', 'onlineTime':'online_time', 'status':'status'}, enableSetter=True),
-                 PreparedLink(FormattedText, 'userData', 'nameTag', formattable_text="{Name}#{id}")]
+                 PreparedLink(FormattedText, 'userData', 'nameTag', formattableText="{Name}#{id}")]
     def __init__(self):
         self.userData = {}
 

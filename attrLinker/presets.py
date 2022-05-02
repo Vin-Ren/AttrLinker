@@ -52,10 +52,10 @@ def multiLinkDictionary(targetClass: type, sourceVar: str, linkMap: Union[Dict[s
         linkDictionary(targetClass, sourceVar, targetVar, sourceDictKey, **kw)
 
 
-def formattedTextFromDict(targetClass: type, sourceVar: str, targetVar: str, formattable_text: str, **kw):
+def formattedTextFromDict(targetClass: type, sourceVar: str, targetVar: str, formattableText: str, **kw):
     '''
     Creates a formatted text from given formattable_text which is formatted with the sourceVar dictionary.
-    Similiar to linkDictionary, except you specify the dictionary keys in the formattable_text, and you could specify multiple keys. Also setter is not available here.
+    Similiar to linkDictionary, except you specify the dictionary keys in the formattableText, and you could specify multiple keys. Also setter is not available here.
     Would incurr a KeyError if the key(s) in the formattable_text is not found in given source dictionary.
     Example: formattedTextFromDict(User, 'data', 'full_name', '{first_name} {last_name}')
     'User.full_name' value is '{first_name} {second_name}'.format(**User.data)
@@ -65,11 +65,11 @@ def formattedTextFromDict(targetClass: type, sourceVar: str, targetVar: str, for
     targetClass:type is the class for the linking to be applied at
     sourceVar:str is the source variable name of an instance of the targetClass, which must be of type dict
     targetVar:str is the attribute name on the class to be linked to
-    formattable_text:str is the text to be formatted with the data from the source. the format of the formattable_text is "{key} {key2}" and so on.
+    formattableText:str is the text to be formatted with the data from the source. the format of the formattableText is "{key} {key2}" and so on.
     
     Extra keyword argument passed, would be passed directly to manager.bind
     '''
-    getterConverter = lambda dict: formattable_text.format(**dict)
+    getterConverter = lambda dict: formattableText.format(**dict)
     manager = LinkManager._getDefault()
     manager.bind(targetClass, sourceVar, targetVar, getterConverter, setupOptions={'enableSetter':False}, **kw)
 

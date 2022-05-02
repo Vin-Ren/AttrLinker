@@ -4,14 +4,22 @@ from .presets import linkDictionary, multiLinkDictionary, linkList, multiLinkLis
 
 
 class LinkMethod(Enum):
+    def getMethod(self):
+        return globals().get(self.value)
+    
+    def __call__(self, *args, **kwargs):
+        meth = self.getMethod()
+        return meth(*args, **kwargs)
+    
+    # Members, being the method name and target function name in string.
     DirectLink = None # A bypass to manager.bind
-    Dictionary = linkDictionary
-    MultiDictionary = multiLinkDictionary
-    List = linkList
-    MultiList = multiLinkList
-    Object = linkObject
-    MultiObject = multiLinkObject
-    FormattedText = formattedTextFromDict
+    Dictionary = 'linkDictionary'
+    MultiDictionary = 'multiLinkDictionary'
+    List = 'linkList'
+    MultiList = 'multiLinkList'
+    Object = 'linkObject'
+    MultiObject = 'multiLinkObject'
+    FormattedText = 'formattedTextFromDict'
 
 DirectLink = LinkMethod.DirectLink
 Dictionary = LinkMethod.Dictionary
@@ -22,13 +30,4 @@ Object = LinkMethod.Object
 MultiObject = LinkMethod.MultiObject
 FormattedText = LinkMethod.FormattedText
 
-__all__ = [
-'DirectLink',
-'Dictionary',
-'MultiDictionary',
-'List',
-'MultiList',
-'Object',
-'MultiObject',
-'FormattedText'
-]
+__all__ = [meth.name for meth in LinkMethod]

@@ -25,14 +25,14 @@ from attrLinker import LinkedClass
 class User:
     # linkMap pair => {destination_attribute: source_key, ...}
     # enableSetter set to True to be able to assign value back to it.
-    __LINKS__ = [PreparedLink(MultiDictionary, 'userData', linkMap={'ID':'id', 'name':'Name', 'onlineTime':'online_time', 'status':'status'}, enableSetter=True),
+    __LINKS__ = [PreparedLink(MultiDictionary, 'userData', linkMap={'ID':'id', 'name':'name', 'onlineTime':'online_time', 'status':'status'}, enableSetter=True),
                  PreparedLink(FormattedText, 'userData', 'nameTag', formattable_text="{Name}#{id}")]
     def __init__(self):
         self.userData = {}
 
     def fetchData(self):
         if len(self.userData):
-            self.userData = {'id':1, 'Name':'Foo', 'online_time':0, 'status': 'idle'}
+            self.userData = {'id':1, 'name':'Foo', 'online_time':0, 'status': 'idle'}
         else:
             self.userData['status']='online'
             self.userData['online_time']+=1
@@ -50,15 +50,15 @@ class User:
 >>> testuser.nameTag
 'Foo#1'
 >>> testuser.userData # Checking the data directly
-{'id': 1, 'Name': 'Foo', 'online_time': 0, 'status': 'idle'}
+{'id': 1, 'name': 'Foo', 'online_time': 0, 'status': 'idle'}
 >>> testuser.onlineTime+=10 # Change it remotely from the assigned attribute (only if enableSetter is True)
 >>> testuser.userData
-{'id': 1, 'Name': 'Foo', 'online_time': 10, 'status': 'idle'}
+{'id': 1, 'name': 'Foo', 'online_time': 10, 'status': 'idle'}
 >>> testuser.fetchData() # Simulating new data fetched from a server on the internet
 >>> testuser.onlineTime
 11
 >>> testuser.status
 'online'
 >>> testuser.userData # Checking the data directly
-{'id': 1, 'Name': 'Foo', 'online_time': 11, 'status': 'online'}
+{'id': 1, 'name': 'Foo', 'online_time': 11, 'status': 'online'}
 ```

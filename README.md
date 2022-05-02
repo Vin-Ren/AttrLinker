@@ -17,9 +17,16 @@ IMHO, The best use case for this is in dynamically allocated data, periodically 
 ## Examples
 ### 1. Dynamically Allocated Data
 ```py
-from attrLinker.presets import multiLinkDictionary, formattedTextFromDict
+from attrLinker.linkMethod import MultiDictionary, FormattedText
+from attrLinker.preparedLink import PreparedLink
+from attrLinker import LinkedClass
 
+@LinkedClass
 class User:
+    # linkMap pair => {destination_attribute: source_key, ...}
+    # enableSetter set to True to be able to assign value back to it.
+    __LINKS__ = [PreparedLink(MultiDictionary, 'userData', linkMap={'ID':'id', 'name':'Name', 'onlineTime':'online_time', 'status':'status'}, enableSetter=True),
+                 PreparedLink(FormattedText, 'userData', 'nameTag', formattable_text="{Name}#{id}")]
     def __init__(self):
         self.userData = {}
 
@@ -29,13 +36,6 @@ class User:
         else:
             self.userData['status']='online'
             self.userData['online_time']+=1
-        
-# linkMap pair => {destination_attribute: source_key, ...}
-linkMap = {'ID':'id', 'name':'Name', 'onlineTime':'online_time', 'status':'status'}
-multiLinkDictionary(User, 'userData', linkMap=linkMap, enableSetter=True)
-formattedTextFromDict(User, 'userData', 'nameTag', "{Name}#{id}")
-# enableSetter set to True to be able to assign value back to it.
-# IMPORTANT: Do not link inside __init__, or the linking operation will be called for every subsequent object created from the class.
 
 >>> testuser = User()
 >>> testuser.fetchData()

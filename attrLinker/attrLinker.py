@@ -207,6 +207,8 @@ class LinkManager:
         
         # Generate a name if not given, though not nice looking, it should not be possible for any duplicates under normal usage, 
         # where each targetVar for each class is used once only.
-        name = str(name or '{}-class:{};source:{};target:{}'.format(self.linkerClass, targetClass, sourceVar, targetVar))
+        name = str(name or '{}-class:{};source:{};target:{}'.format('%s(%s)'(self.linkerClass.__name__, id(self.linkerClass)), 
+                                                                    '%s(%s)'(self.targetClass.__name__, id(self.targetClass)), 
+                                                                    sourceVar, targetVar))
         self.createLinker(name, sourceVar, getterConverter=getterConverter, setterConverter=setterConverter, setterOverrider=setterOverrider, doc=doc, setupOptions=setupOptions, **kw)
         self.applyLinker(name, targetClass, targetVar)

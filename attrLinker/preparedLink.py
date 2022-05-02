@@ -16,7 +16,7 @@ class PreparedLink:
         return "<{} Method={} AppliedCount={}>".format(self.__class__.__name__, LinkMethod(self.linkMethod).name, len(self._appliedClasses))
 
     def apply(self, targetClass: type):
-        if self.linkMethod is None:
+        if self.linkMethod.getMethod() is None:
             manager = LinkManager._getDefault()
             manager.bind(targetClass, self.sourceVar, *self.executionArgs, **self.executionKwargs)
         else:

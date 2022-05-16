@@ -5,6 +5,9 @@ from typing import Any, Dict
 
 class Linker:
     '''Linker object to link between attributes of a class' instance using property'''
+    
+    __slots__ = ['sourceVar', 'getterConverter', 'setterOverrider', 'setterConverter', 'doc', 'property', 'links']
+    
     def __init__(self, sourceVar: str, getterConverter: callable = DefaultLambda, setterConverter: callable = DefaultLambda, setterOverrider: callable = None, doc: str = None):
         '''
         Params
@@ -78,6 +81,8 @@ class LinkManager:
     _DEFAULT_MANAGER = None # Manager for preset linkers/bindings
     _MANAGERS = [] # Keep track of created managers
     _LINKER_CLASS = Linker # Linker class to create links
+
+    __slots__ = ['autoLinkWithManager', 'linkerSetupOptions', 'linkers', 'links']
 
     def __new__(cls):
         # Keep track of managers

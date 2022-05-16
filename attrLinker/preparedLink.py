@@ -4,6 +4,9 @@ from .linkMethod import LinkMethod
 
 
 class PreparedLink:
+    
+    __slots__ = ['linkMethod', 'sourceVar', 'executionArgs', 'executionKwargs', '_appliedClasses']
+    
     def __init__(self, linkMethod: LinkMethod, sourceVar, *args, **kwargs):
         self.linkMethod = linkMethod
         self.sourceVar = sourceVar

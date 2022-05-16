@@ -3,9 +3,12 @@ from enum import Enum
 from .presets import linkDictionary, multiLinkDictionary, linkList, multiLinkList, linkObject, multiLinkObject, formattedTextFromDict
 
 
+METHODS = {f.__name__:f for f in [linkDictionary, multiLinkDictionary, linkList, multiLinkList, linkObject, multiLinkObject, formattedTextFromDict]}
+
+
 class LinkMethod(Enum):
     def getMethod(self):
-        return globals().get(self.value)
+        return METHODS.get(self.value)
     
     def __call__(self, *args, **kwargs):
         meth = self.getMethod()
